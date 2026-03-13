@@ -5,6 +5,7 @@
 namespace moderncppmastery {
 
 // Fixed-size vector with dynamic size tracking
+// Demonstrates: templates, RAII, rule of 5
 template <typename T, size_t N>
 class FixedVector {
 public:
@@ -13,13 +14,18 @@ public:
 
     FixedVector() = default;
 
+    // Copy constructor
+    FixedVector(const FixedVector& other)
+        : data_(other.data_), size_(other.size_) {}
+
     void push_back(const T& value) {
         if (size_ >= N)
             throw std::overflow_error("FixedVector capacity exceeded");
         data_[size_++] = value;
     }
 
-    T& operator[](size_type index) { return data_[index]; }
+    T&       operator[](size_type index)       { return data_[index]; }
+    const T& operator[](size_type index) const { return data_[index]; }
 
     size_type size()     const { return size_; }
     size_type capacity() const { return N; }
