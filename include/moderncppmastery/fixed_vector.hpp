@@ -1,11 +1,12 @@
 #pragma once
 #include <array>
 #include <stdexcept>
+#include <utility>
 
 namespace moderncppmastery {
 
 // Fixed-size vector with dynamic size tracking
-// Demonstrates: templates, RAII, rule of 5
+// Demonstrates: templates, move semantics, RAII
 template <typename T, size_t N>
 class FixedVector {
 public:
@@ -18,10 +19,32 @@ public:
     FixedVector(const FixedVector& other)
         : data_(other.data_), size_(other.size_) {}
 
+    // Move constructor
+    FixedVector(FixedVector&& other) noexcept
+        : data_(std::move(other.data_)), size_(other.size_) {
+        other.size_ = 0;
+    }
+
+    // Move assignment
+    FixedVector& operator=(FixedVector&& other) noexcept {
+        if (this != &other) {
+            data_  = std::move(other.data_);
+            size_  = other.size_;
+            other.size_ = 0;
+        }
+        return *this;
+    }
+
     void push_back(const T& value) {
         if (size_ >= N)
             throw std::overflow_error("FixedVector capacity exceeded");
         data_[size_++] = value;
+    }
+
+    void push_back(T&& value) {
+        if (size_ >= N)
+            throw std::overflow_error("FixedVector capacity exceeded");
+        data_[size_++] = std::move(value);
     }
 
     T&       operator[](size_type index)       { return data_[index]; }
