@@ -4,14 +4,16 @@
 
 namespace moderncppmastery {
 
-// RAII Timer - resource acquired in ctor, released in dtor
+// RAII Timer (automatically prints duration when destroyed)
 class ScopedTimer {
 public:
     explicit ScopedTimer(const char* name)
         : name_(name), start_(std::chrono::high_resolution_clock::now()) {}
 
     ~ScopedTimer() {
-        // TODO: calculate duration and print
+        auto end      = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration<double, std::milli>(end - start_).count();
+        std::cout << name_ << " took " << duration << " ms\n";
     }
 
 private:
