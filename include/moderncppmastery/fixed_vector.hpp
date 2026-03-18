@@ -58,7 +58,7 @@ public:
     auto end()   const { return data_.begin() + size_; }
 
 private:
-    std::array<T, N> data_{};  // RAII: array is automatically managed
+    std::array<T, N> data_{};  // RAII: std::array is automatically managed on scope exit
     size_type size_ = 0;
 };
 
