@@ -1,0 +1,17 @@
+name: CMake Build & Test
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure CMake
+        run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release -j 2
+      - name: Run Demo
+        run: ./build/demo
